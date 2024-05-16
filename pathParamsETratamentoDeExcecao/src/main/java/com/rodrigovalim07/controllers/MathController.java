@@ -1,4 +1,4 @@
-package com.rodrigovalim07;
+package com.rodrigovalim07.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +9,7 @@ import com.rodrigovalim07.services.MathService;
 
 @RestController
 public class MathController {
-
+	
 	@Autowired
 	private MathService mathService;
 	
@@ -27,7 +27,7 @@ public class MathController {
 	
 	@GetMapping("/mult/{numberOne}/{numberTwo}")
 	public Double multiplication(@PathVariable(value = "numberOne") String numberOne,
-						@PathVariable(value = "numberTwo") String numberTwo) throws Exception {
+							@PathVariable(value = "numberTwo") String numberTwo) throws Exception {
 		return mathService.multiplication(numberOne, numberTwo);
 	}
 	
