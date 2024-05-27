@@ -1,4 +1,4 @@
-package com.rodrigovalim07.securityJwt;
+package com.rodrigovalim07.security.jwt;
 
 import java.util.Base64;
 import java.util.Date;
@@ -18,8 +18,10 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rodrigovalim07.data.vo.v1.security.TokenVO;
+import com.rodrigovalim07.exceptions.InvalidJwtAuthenticationException;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class JwtTokenProvider {
@@ -27,7 +29,7 @@ public class JwtTokenProvider {
 	@Value("${security.jwt.token.secret-key:secret}")
 	private String secretKey = "secret";
 	
-	@Value("${security.jwt.token.expire-lenght:3600000}")
+	@Value("${security.jwt.token.expire-length:3600000}")
 	private long validityInMilliseconds = 3600000; // 1h
 	
 	@Autowired
@@ -83,5 +85,26 @@ public class JwtTokenProvider {
 		JWTVerifier verifier = JWT.require(alg).build();
 		DecodedJWT decodedJWT = verifier.verify(token);
 		return decodedJWT;
+	}
+	
+	public String resolveToken(HttpServletRequest req) {
+		String bearerToken = req.getHeader("Authorization");
+		
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring("Bearer ".length());
+		}
+		return null;
+	}
+	
+	public boolean validadeToken(String token) {
+		DecodedJWT decodedJWT = decodedToken(token);
+		try {
+			if (decodedJWT.getExpiresAt().before(new Date())) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			throw new InvalidJwtAuthenticationException("Expired or invalid JWT token.");
+		}
 	}
 }
