@@ -10,4 +10,7 @@ public class TestConfigs {
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	public static final String CONTENT_TYPE_XML = "application/xml";
 	public static final String CONTENT_TYPE_YML = "application/x-yaml";
+
+	public static final String ORIGIN_RODRIGO = "https://rodrigovalim07.com";
+	public static final String ORIGIN_VALIM = "https://valim.com";
 }
