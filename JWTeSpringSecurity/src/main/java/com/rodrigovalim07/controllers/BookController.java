@@ -33,7 +33,7 @@ public class BookController {
 	private BookServices service;
 	
 	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
-	@Operation(summary = "Finds all book", description = "Finds all book", tags = {"Book"},
+	@Operation(summary = "Find all books", description = "Find all books", tags = {"Book"},
 	responses = {@ApiResponse(description = "Success", responseCode = "200", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = BookVO.class)))}),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -46,7 +46,7 @@ public class BookController {
 	
 	
 	@GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
-	@Operation(summary = "Finds a book", description = "Finds a book", tags = {"Book"},
+	@Operation(summary = "Find a book", description = "Find a book", tags = {"Book"},
 	responses = {@ApiResponse(description = "Success", responseCode = "200", content = 
 			@Content(schema = @Schema(implementation = BookVO.class))),
 			@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
