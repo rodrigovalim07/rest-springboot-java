@@ -84,7 +84,7 @@ public class User implements UserDetails, Serializable {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return this.isAccountNonExpired();
+	    return this.accountNonExpired;
 	}
 
 	@Override
