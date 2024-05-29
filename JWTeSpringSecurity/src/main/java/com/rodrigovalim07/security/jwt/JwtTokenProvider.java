@@ -51,12 +51,11 @@ public class JwtTokenProvider {
 		
 		return new TokenVO(username, true, now, validity, accessToken, refreshToken);
 	}
-
 	
 	public TokenVO refreshToken(String refreshToken) {
-		if (refreshToken.contains("Bearer ")) refreshToken =
-				refreshToken.substring("Bearer ".length());
-		
+		if (refreshToken.contains("Bearer ")) {
+			refreshToken = refreshToken.substring("Bearer ".length());
+		}
 		JWTVerifier verifier = JWT.require(algorithm).build();
 		DecodedJWT decodedJWT = verifier.verify(refreshToken);
 		String username = decodedJWT.getSubject();

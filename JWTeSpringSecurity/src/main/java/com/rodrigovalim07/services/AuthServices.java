@@ -59,4 +59,13 @@ public class AuthServices {
 			throw new UsernameNotFoundException("Username " + username + " not found!");
 		}
 	}
+	
+	public boolean checkIfParamsIsNotNull(String username, String refreshToken) {
+		return refreshToken == null || refreshToken.isBlank() || username == null || username.isBlank();
+	}
+
+	public boolean checkIfParamsIsNotNull(AccountCredentialsVO data) {
+		return data == null || data.getUsername() == null || data.getUsername().isBlank()
+				 || data.getPassword() == null || data.getPassword().isBlank();
+	}
 }
