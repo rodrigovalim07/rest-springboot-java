@@ -61,7 +61,7 @@ public class PersonController {
 		return service.findById(id);
 	}
 	
-	@CrossOrigin(origins = {"http://localhost:8080", "https//rodrigovalim07.com"} )
+	@CrossOrigin(origins = {"http://localhost:8080", "https://rodrigovalim07.com"} )
 	@PostMapping(consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML},
 				 produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	@Operation(summary = "Adds a new person", description = "Adds a new person by passing in a JSON, XML OR YML representation of the person",

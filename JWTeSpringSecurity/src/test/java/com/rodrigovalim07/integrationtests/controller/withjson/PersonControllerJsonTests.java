@@ -46,7 +46,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	public void testCreate() throws JsonMappingException, JsonProcessingException {
-		MockPerson();
+		mockPerson();
 		
 		specification = new RequestSpecBuilder()
 				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_RODRIGO)
@@ -63,9 +63,9 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 					.post()
 				.then()
 					.statusCode(200)
-				.extract()
-					.body()
-						.asString();
+						.extract()
+						.body()
+								.asString();
 		
 		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
 		person = persistedPerson;
@@ -87,7 +87,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	@Test
 	@Order(2)
 	public void testCreateWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
-		MockPerson();
+		mockPerson();
 		
 		specification = new RequestSpecBuilder()
 				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_VALIM)
@@ -116,7 +116,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	@Test
 	@Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
-		MockPerson();
+		mockPerson();
 		
 		specification = new RequestSpecBuilder()
 				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_RODRIGO)
@@ -157,7 +157,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	@Test
 	@Order(4)
 	public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
-		MockPerson();
+		mockPerson();
 		
 		specification = new RequestSpecBuilder()
 				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_VALIM)
@@ -182,7 +182,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		assertEquals("Invalid CORS request", content);
 	}
 	
-	private void MockPerson() {
+	private void mockPerson() {
 		person.setFirstName("Richard");
 		person.setLastName("Stallman");
 		person.setAddress("New York City, New York, US");

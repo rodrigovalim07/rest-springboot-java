@@ -9,7 +9,7 @@ public class Startup {
 	public static void main(String[] args) {
 		SpringApplication.run(Startup.class, args);
 		
-        /*
+        /* gerar uma nova senha
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         
         Pbkdf2PasswordEncoder pbkdf2Encoder =
@@ -24,8 +24,7 @@ public class Startup {
         String result1 = passwordEncoder.encode("admin123");
         String result2 = passwordEncoder.encode("admin234");
         System.out.println("My hash result1 " + result1);
-        System.out.println("My hash result2 " + result2);*/
-        
+        System.out.println("My hash result2 " + result2);
+        */
 	}
-
 }
