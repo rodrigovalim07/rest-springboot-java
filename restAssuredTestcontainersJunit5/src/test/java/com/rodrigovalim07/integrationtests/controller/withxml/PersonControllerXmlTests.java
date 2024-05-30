@@ -1,4 +1,4 @@
-package com.rodrigovalim07.integrationtests.controller.withjson;
+package com.rodrigovalim07.integrationtests.controller.withxml;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.rodrigovalim07.configs.TestConfigs;
 import com.rodrigovalim07.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.rodrigovalim07.integrationtests.vo.AccountCredentialsVO;
@@ -33,16 +33,16 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
-public class PersonControllerJsonTests extends AbstractIntegrationTest {
+public class PersonControllerXmlTests extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
-	private static ObjectMapper objectMapper;
+	private static XmlMapper objectMapper;
 	
 	private static PersonVO person;
 	
 	@BeforeAll
 	public static void setup() {
-		objectMapper = new ObjectMapper();
+		objectMapper = new XmlMapper();
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
 		person = new PersonVO();
@@ -56,7 +56,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		var accessToken = given()
 				.basePath("/auth/signin")
 					.port(TestConfigs.SERVER_PORT)
-					.contentType(TestConfigs.CONTENT_TYPE_JSON)
+					.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.body(user)
 					.when()
 				.post()
@@ -82,7 +82,8 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		mockPerson();
 		
 		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 					.body(person)
 					.when()
 					.post()
@@ -115,7 +116,8 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		person.setFirstName("Nicolas");
 		
 		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 				.body(person)
 				.when()
 				.put()
@@ -148,7 +150,8 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		mockPerson();
 		
 		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 	            .pathParam("id", person.getId())
 				.basePath("/api/person/v1/{id}")
 				.when()
@@ -181,7 +184,8 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	public void testDelete() throws JsonMappingException, JsonProcessingException {
 		
 		given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 				.pathParam("id", person.getId())
 				.basePath("/api/person/v1/{id}")
 				.when()
@@ -195,7 +199,8 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		
 		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 					.when()
 					.get()
 				.then()
@@ -249,7 +254,7 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 			.build();
 		
 		given().spec(specificationWithoutToken)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.contentType(TestConfigs.CONTENT_TYPE_XML)
 					.when()
 					.get()
 				.then()
