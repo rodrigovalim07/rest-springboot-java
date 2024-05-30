@@ -32,7 +32,7 @@ public class YMLMapper implements ObjectMapper {
 			String dataToDeserialize = context.getDataToDeserialize().asString();
 			Class type = (Class)context.getType();
 			
-            logger.info("Trying deserialize object of type" + type);
+            logger.info("Trying deserialize object of type " + type);
 
 			return objectMapper.readValue(dataToDeserialize, typeFactory.constructType(type));
 		} catch (JsonMappingException e) {
