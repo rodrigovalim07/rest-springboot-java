@@ -62,6 +62,7 @@ public class PersonControllerYamlTests extends AbstractIntegrationTest {
 				.basePath("/auth/signin")
 					.port(TestConfigs.SERVER_PORT)
 					.contentType(TestConfigs.CONTENT_TYPE_YML)
+					.accept(TestConfigs.CONTENT_TYPE_YML)
 				.body(user, objectMapper)
 					.when()
 				.post()
@@ -90,7 +91,7 @@ public class PersonControllerYamlTests extends AbstractIntegrationTest {
 					.config(RestAssuredConfig
 					.config()
 					.encoderConfig(EncoderConfig.encoderConfig()
-					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.JSON)))
+					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 					.body(person, objectMapper)
@@ -127,7 +128,7 @@ public class PersonControllerYamlTests extends AbstractIntegrationTest {
 					.config(RestAssuredConfig
 					.config()
 					.encoderConfig(EncoderConfig.encoderConfig()
-					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.JSON)))
+					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 				.body(person, objectMapper)
@@ -164,7 +165,7 @@ public class PersonControllerYamlTests extends AbstractIntegrationTest {
 					.config(RestAssuredConfig
 					.config()
 					.encoderConfig(EncoderConfig.encoderConfig()
-					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.JSON)))
+					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 	            .pathParam("id", person.getId())
@@ -216,7 +217,7 @@ public class PersonControllerYamlTests extends AbstractIntegrationTest {
 					.config(RestAssuredConfig
 					.config()
 					.encoderConfig(EncoderConfig.encoderConfig()
-					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.JSON)))
+					.encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 					.when()

@@ -23,12 +23,9 @@ public class Book implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false, length = 250)
-	private String title;
-	
-	@Column(nullable = false, length = 150)
+	@Column(nullable = false, length = 180)
 	private String author;
-	
+
 	@Column(name = "launch_date", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date launchDate;
@@ -36,8 +33,10 @@ public class Book implements Serializable {
 	@Column(nullable = false)
 	private Double price;
 	
-	public Book() {
-	}
+	@Column(nullable = false, length = 250)
+	private String title;
+	
+	public Book() {}
 
 	public Long getId() {
 		return id;
@@ -70,7 +69,7 @@ public class Book implements Serializable {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -78,7 +77,7 @@ public class Book implements Serializable {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(author, id, launchDate, price, title);

@@ -32,6 +32,7 @@ public class AuthControllerXmlTest extends AbstractIntegrationTest {
 				.basePath("/auth/signin")
 				.port(TestConfigs.SERVER_PORT)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
+				.accept(TestConfigs.CONTENT_TYPE_XML)
 				.body(user)
 				.when()
 					.post()

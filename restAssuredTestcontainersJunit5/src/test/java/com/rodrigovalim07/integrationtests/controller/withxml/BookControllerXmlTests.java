@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.rodrigovalim07.configs.TestConfigs;
 import com.rodrigovalim07.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.rodrigovalim07.integrationtests.vo.AccountCredentialsVO;
-import com.rodrigovalim07.integrationtests.vo.PersonVO;
+import com.rodrigovalim07.integrationtests.vo.BookVO;
 import com.rodrigovalim07.integrationtests.vo.TokenVO;
 
 import io.restassured.builder.RequestSpecBuilder;
@@ -33,19 +34,18 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
-public class PersonControllerXmlTests extends AbstractIntegrationTest {
+public class BookControllerXmlTests extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
 	private static XmlMapper objectMapper;
-	
-	private static PersonVO person;
+	private static BookVO book;
 	
 	@BeforeAll
 	public static void setup() {
-		objectMapper = new XmlMapper();
-		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		
-		person = new PersonVO();
+	    objectMapper = new XmlMapper();
+	    objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+	    book = new BookVO();
 	}
 	
 	@Test
@@ -67,10 +67,10 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 							.body()
 								.as(TokenVO.class)
 							.getAccessToken();
-							
+		
 		specification = new RequestSpecBuilder()
 				.addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
-				.setBasePath("/api/person/v1")
+				.setBasePath("/api/book/v1")
 				.setPort(TestConfigs.SERVER_PORT)
 					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
@@ -80,46 +80,44 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	public void testCreate() throws JsonMappingException, JsonProcessingException {
-		mockPerson();
+		mockBook();
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.accept(TestConfigs.CONTENT_TYPE_XML)
-					.body(person)
+					.body(book)
 					.when()
 					.post()
 				.then()
 					.statusCode(200)
 						.extract()
 						.body()
-								.asString();
+							.asString();
 		
-		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
-		person = persistedPerson;
+        book = objectMapper.readValue(content, BookVO.class);
 		
-		assertNotNull(persistedPerson);
-		assertNotNull(persistedPerson.getId());
-		assertNotNull(persistedPerson.getFirstName());
-		assertNotNull(persistedPerson.getLastName());
-		assertNotNull(persistedPerson.getAddress());
-		assertNotNull(persistedPerson.getGender());
-		assertTrue(persistedPerson.getId() > 0);
+		assertNotNull(book);
+		assertNotNull(book.getId());
+		assertNotNull(book.getTitle());
+		assertNotNull(book.getAuthor());
+		assertNotNull(book.getPrice());
+		assertNotNull(book.getLaunchDate());
+		assertTrue(book.getId() > 0);
 		
-		assertEquals("Nikola", persistedPerson.getFirstName());
-		assertEquals("Tesla", persistedPerson.getLastName());
-		assertEquals("Alfenas, Minas Gerais, Brasil", persistedPerson.getAddress());
-		assertEquals("Male", persistedPerson.getGender());
+		assertEquals("Java Concurrency in Practice", book.getTitle());
+		assertEquals("Brian Goetz e Tim Peierls", book.getAuthor());
+		assertEquals(250D, book.getPrice());
 	}
 	
 	@Test
 	@Order(2)
 	public void testUpdate() throws JsonMappingException, JsonProcessingException {
-		person.setFirstName("Nicolas");
+		book.setTitle("Java para Vencedores");
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.accept(TestConfigs.CONTENT_TYPE_XML)
-				.body(person)
+				.body(book)
 				.when()
 				.put()
 				.then()
@@ -128,33 +126,31 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 				.body()
 				.asString();
 		
-		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
-		person = persistedPerson;
+		book = objectMapper.readValue(content, BookVO.class);
 		
-		assertNotNull(persistedPerson);
-		assertNotNull(persistedPerson.getId());
-		assertNotNull(persistedPerson.getFirstName());
-		assertNotNull(persistedPerson.getLastName());
-		assertNotNull(persistedPerson.getAddress());
-		assertNotNull(persistedPerson.getGender());
+		assertNotNull(book);
+		assertNotNull(book.getId());
+		assertNotNull(book.getTitle());
+		assertNotNull(book.getAuthor());
+		assertNotNull(book.getPrice());
+		assertNotNull(book.getLaunchDate());
 		
-		assertEquals(person.getId(), persistedPerson.getId());	
-		assertEquals("Nicolas", persistedPerson.getFirstName());
-		assertEquals("Tesla", persistedPerson.getLastName());
-		assertEquals("Alfenas, Minas Gerais, Brasil", persistedPerson.getAddress());
-		assertEquals("Male", persistedPerson.getGender());
+		assertEquals(book.getId(), book.getId());	
+		assertEquals("Java para Vencedores", book.getTitle());
+		assertEquals("Brian Goetz e Tim Peierls", book.getAuthor());
+		assertEquals(250D, book.getPrice());
 	}
 
 	@Test
 	@Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
-		mockPerson();
+		mockBook();
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.accept(TestConfigs.CONTENT_TYPE_XML)
-	            .pathParam("id", person.getId())
-				.basePath("/api/person/v1/{id}")
+	            .pathParam("id", book.getId())
+				.basePath("/api/book/v1/{id}")
 				.when()
 				.get()
 				.then()
@@ -163,21 +159,19 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 					.body()
 						.asString();
 		
-		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
-		person = persistedPerson;
+		book = objectMapper.readValue(content, BookVO.class);
 		
-		assertNotNull(persistedPerson);
-		assertNotNull(persistedPerson.getId());
-		assertNotNull(persistedPerson.getFirstName());
-		assertNotNull(persistedPerson.getLastName());
-		assertNotNull(persistedPerson.getAddress());
-		assertNotNull(persistedPerson.getGender());
+		assertNotNull(book);
+		assertNotNull(book.getId());
+		assertNotNull(book.getTitle());
+		assertNotNull(book.getAuthor());
+		assertNotNull(book.getPrice());
+		assertNotNull(book.getLaunchDate());
 		
-		assertEquals(person.getId(), persistedPerson.getId());
-		assertEquals("Nicolas", persistedPerson.getFirstName());
-		assertEquals("Tesla", persistedPerson.getLastName());
-		assertEquals("Alfenas, Minas Gerais, Brasil", persistedPerson.getAddress());
-		assertEquals("Male", persistedPerson.getGender());
+		assertEquals(book.getId(), book.getId());
+		assertEquals("Java para Vencedores", book.getTitle());
+		assertEquals("Brian Goetz e Tim Peierls", book.getAuthor());
+		assertEquals(250D, book.getPrice());
 	}
 
 	@Test
@@ -186,9 +180,8 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 		
 		given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
-				.accept(TestConfigs.CONTENT_TYPE_XML)
-				.pathParam("id", person.getId())
-				.basePath("/api/person/v1/{id}")
+				.pathParam("id", book.getId())
+				.basePath("/api/book/v1/{id}")
 				.when()
 				.delete()
 				.then()
@@ -210,37 +203,35 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 						.body()
 							.asString();
 		
-		List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+		List<BookVO> book = objectMapper.readValue(content, new TypeReference<List<BookVO>>() {});
 		
-		PersonVO foundPersonOne = people.get(0);
+		BookVO foundBookOne = book.get(0);
 		
-		assertNotNull(foundPersonOne.getId());
-		assertNotNull(foundPersonOne.getFirstName());
-		assertNotNull(foundPersonOne.getLastName());
-		assertNotNull(foundPersonOne.getAddress());
-		assertNotNull(foundPersonOne.getGender());
+		assertNotNull(foundBookOne.getId());
+		assertNotNull(foundBookOne.getTitle());
+		assertNotNull(foundBookOne.getAuthor());
+		assertNotNull(foundBookOne.getPrice());
+		assertNotNull(foundBookOne.getLaunchDate());
 		
-		assertEquals((Long) 1L, foundPersonOne.getId());
+		assertEquals((Long) 1L, foundBookOne.getId());
 		
-		assertEquals("Ayrton", foundPersonOne.getFirstName());
-		assertEquals("Senna", foundPersonOne.getLastName());
-		assertEquals("São Paulo", foundPersonOne.getAddress());
-		assertEquals("Male", foundPersonOne.getGender());
+		assertEquals("Working effectively with legacy code", foundBookOne.getTitle());
+		assertEquals("Michael C. Feathers", foundBookOne.getAuthor());
+		assertEquals(49.00, foundBookOne.getPrice());
 		
-		PersonVO foundPersonSix = people.get(5);
+		BookVO foundBookSix = book.get(5);
 		
-		assertNotNull(foundPersonSix.getId());
-		assertNotNull(foundPersonSix.getFirstName());
-		assertNotNull(foundPersonSix.getLastName());
-		assertNotNull(foundPersonSix.getAddress());
-		assertNotNull(foundPersonSix.getGender());
+		assertNotNull(foundBookSix.getId());
+		assertNotNull(foundBookSix.getTitle());
+		assertNotNull(foundBookSix.getAuthor());
+		assertNotNull(foundBookSix.getLaunchDate());
+		assertNotNull(foundBookSix.getPrice());
 		
-		assertEquals((Long) 9L, foundPersonSix.getId());
+		assertEquals((Long) 6L, foundBookSix.getId());
 		
-		assertEquals("Nelson", foundPersonSix.getFirstName());
-		assertEquals("Mvezo", foundPersonSix.getLastName());
-		assertEquals("Mvezo – South Africa", foundPersonSix.getAddress());
-		assertEquals("Male", foundPersonSix.getGender());
+		assertEquals("Refactoring", foundBookSix.getTitle());
+		assertEquals("Martin Fowler e Kent Beck", foundBookSix.getAuthor());
+		assertEquals(88.00, foundBookSix.getPrice());
 	}
 	
 	@Test
@@ -248,7 +239,7 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
 		
 		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
-			.setBasePath("/api/person/v1")
+			.setBasePath("/api/book/v1")
 			.setPort(TestConfigs.SERVER_PORT)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
@@ -262,10 +253,10 @@ public class PersonControllerXmlTests extends AbstractIntegrationTest {
 					.statusCode(403);
 	}
 		
-	private void mockPerson() {
-		person.setFirstName("Nikola");
-		person.setLastName("Tesla");
-		person.setAddress("Alfenas, Minas Gerais, Brasil");
-		person.setGender("Male");		
+	private void mockBook() {
+		book.setTitle("Java Concurrency in Practice");
+		book.setAuthor("Brian Goetz e Tim Peierls");
+		book.setLaunchDate(new Date());
+		book.setPrice(250D);		
 	}
 }
