@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -16,7 +14,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +22,7 @@ import com.rodrigovalim07.integrationtests.testcontainers.AbstractIntegrationTes
 import com.rodrigovalim07.integrationtests.vo.AccountCredentialsVO;
 import com.rodrigovalim07.integrationtests.vo.PersonVO;
 import com.rodrigovalim07.integrationtests.vo.TokenVO;
+import com.rodrigovalim07.integrationtests.vo.wrappers.WrapperPersonVO;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -234,15 +232,17 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-					.when()
-					.get()
+				.queryParams("page", 3, "size", 10, "direction", "asc")
+				.when()
+				.get()
 				.then()
-					.statusCode(200)
-						.extract()
-						.body()
-							.asString();
+				.statusCode(200)
+				.extract()
+				.body()
+				.asString();
 		
-		List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+		WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+		var people = wrapper.getEmbedded().getPersons();
 		
 		PersonVO foundPersonOne = people.get(0);
 		
@@ -254,11 +254,11 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		
 		assertTrue(foundPersonOne.getEnabled());
 		
-		assertEquals((Long) 1L, foundPersonOne.getId());
+		assertEquals((Long) 677L, foundPersonOne.getId());
 		
-		assertEquals("Ayrton", foundPersonOne.getFirstName());
-		assertEquals("Senna", foundPersonOne.getLastName());
-		assertEquals("São Paulo", foundPersonOne.getAddress());
+		assertEquals("Alic", foundPersonOne.getFirstName());
+		assertEquals("Terbrug", foundPersonOne.getLastName());
+		assertEquals("3 Eagle Crest Court", foundPersonOne.getAddress());
 		assertEquals("Male", foundPersonOne.getGender());
 		
 		PersonVO foundPersonSix = people.get(5);
@@ -271,12 +271,12 @@ public class PersonControllerJsonTests extends AbstractIntegrationTest {
 		
 		assertTrue(foundPersonSix.getEnabled());
 
-		assertEquals((Long) 9L, foundPersonSix.getId());
+		assertEquals((Long) 911L, foundPersonSix.getId());
 		
-		assertEquals("Nelson", foundPersonSix.getFirstName());
-		assertEquals("Mvezo", foundPersonSix.getLastName());
-		assertEquals("Mvezo – South Africa", foundPersonSix.getAddress());
-		assertEquals("Male", foundPersonSix.getGender());
+		assertEquals("Allegra", foundPersonSix.getFirstName());
+		assertEquals("Dome", foundPersonSix.getLastName());
+		assertEquals("57 Roxbury Pass", foundPersonSix.getAddress());
+		assertEquals("Female", foundPersonSix.getGender());
 	}
 	
 	@Test
