@@ -3,7 +3,7 @@ server:
 cors:
   originPatterns: http://localhost:8080,http://localhost:3000,https://rodrigovalim07.com
 file:
-  upload-dir: /curso api/trabalhando com upload e download
+  upload-dir: /home/runner/work/rest_with_spring_boot/UploadDir
 security:
   jwt:
     token:
